@@ -72,7 +72,17 @@ app.get("/", (request, response) => {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/questions", (request, response) => {
+app.get("/questions/:removeId", (request, response) => {
+  if (request.params.removeId) {
+    let idx = -1;
+    for (let i = 0; i < questionArr.length; i++) {
+      if (questionArr[i].id == request.params.removeId) {
+        idx = i;
+        break;
+      }
+    }
+    if (idx >= 0) questionArr.splice(idx, 1);
+  }
   response.json(questionArr);
 });
 
