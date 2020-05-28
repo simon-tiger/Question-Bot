@@ -1,0 +1,25 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.question {
+  background: #7289DA;
+  color: #FFF;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  height: 40px;
+}
+
+.id {
+  font-size: 32px;
+  float: left;
+}
+
+.q {
+  font-size: 16px;
+  float: right;
+  text-align: left;
+  width: calc(100% - 60px);
+}
