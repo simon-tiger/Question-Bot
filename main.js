@@ -12,6 +12,11 @@ client.once("ready", () => {
 const questionArr = [];
 let idCounter = 1;
 
+// TODO: Refactor
+function condition(message) {
+  return message.guild.name == "Simon's Discord Bot Playground" || message.channel.id == "276366150713999363";
+}
+
 function nf(num, digits) {
   let str = "" + num;
   while (str.length < digits) {
@@ -22,7 +27,7 @@ function nf(num, digits) {
 
 client.on("message", message => {
   let msg = message.content;
-  if (msg.slice(0, 4) == "qar!") {
+  if (msg.slice(0, 4) == "qar!" && condition(message)) {
     msg = msg.slice(4);
     console.log(msg);
     if (msg.slice(0, 8) == "question") {
