@@ -25,6 +25,35 @@ const modsOrMe = [
   "SolarLiner"
 ];
 
+function like(message, number, remove, permissionFailiure, _404Failiure) {
+  let question = null;
+  for (const q of questionArr) {
+    if (q.id == number) {
+      question = q;
+      break;
+    }
+  }
+  if (question) {
+    if (!question.likes.includes(message.author.id) || remove) {
+      if (remove) {
+        const idx = question.likes.indexOf(message.author.id);
+        if (idx >= 0) question.likes.splice(idx, 1);
+        else          message.channel.send(permissionFailiure);
+      } else {
+        question.likes.push(message.author.id);
+      }
+    } else {
+      message.channel.send(permissionFailiure); //"Sorry, you already liked this question! To avoid spam protection, I only allow 1 like per person per question!");
+    }
+  } else {
+    message.channel.send(_404Failiure); //"Sorry, the ID you specified doesn't belong to any question! :(")
+  }
+  questionArr.sort((a, b) => {
+    if (a.likes.length == b.likes.length) return a.id - b.id;
+    else                                  return b.likes.length - a.likes.length;
+  });
+}
+
 // TODO: Refactor
 function condition(message) {
   return message.guild.name == "Simon's Discord Bot Playground" || message.channel.id == "276366150713999363";
@@ -66,26 +95,12 @@ ${q.question}
       let number = msg.slice(5);
       if (number[0] == "#") number = +number.slice(1);
       else                  number = +number;
-      let question = null;
-      for (const q of questionArr) {
-        if (q.id == number) {
-          question = q;
-          break;
-        }
-      }
-      if (question) {
-        if (!question.likes.includes(message.author.id)) {
-          question.likes.push(message.author.id);
-        } else {
-          message.channel.send("Sorry, you already liked this question! To avoid spam protection, I only allow 1 like per person per question!");
-        }
-      } else {
-        message.channel.send("Sorry, the ID you specified doesn't belong to any question! :(")
-      }
-      questionArr.sort((a, b) => {
-        if (a.likes.length == b.likes.length) return a.id - b.id;
-        else                    return b.likes.length - a.likes.length;
-      });
+      like(message, number, false, "Sorry, you already liked this question! To avoid spam, I only allow 1 like per person per question!", "Sorry, the ID you specified doesn't belong to any question! :(");
+    } else if (msg.slice(0, 6) == "unlike") {
+      let number = msg.slice(7);
+      if (number[0] == "#") number = +number.slice(1);
+      else                  number = +number;
+      like(message, number, true, "Sorry, you can't take back a non-existant like!", "Sorry, the ID you specified doesn't belong to any question! :(");
     } else if (msg.slice(0, 6) == "delete") {
       let number = msg.slice(7);
       if (number[0] == "#") number = +number.slice(1);
