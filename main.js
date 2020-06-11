@@ -34,7 +34,11 @@ client.on("message", message => {
       const q = msg.slice(9);
       questionArr.push({
         question: q,
-        likes: 0,
+        author: {
+          name: message.author.username,
+          id: message.author.id
+        },
+        likes: [],
         id: idCounter
       });
       message.channel.send(`Thanks for your question! Your question was recorded with ID #${nf(idCounter, 2)}.`);
@@ -43,7 +47,7 @@ client.on("message", message => {
       for (const q of questionArr) {
         message.channel.send(`Question #${nf(q.id, 2)}:
 ${q.question}
-:+1: ${q.likes}`);
+:+1: ${q.likes.length}`);
       }
     } else if (msg.slice(0, 4) == "like") {
       let number = msg.slice(5);
@@ -57,13 +61,17 @@ ${q.question}
         }
       }
       if (question) {
-        question.likes++;
+        if (!question.likes.includes(message.author.id)) {
+          question.likes.push(message.author.id);
+        } else {
+          message.channel.send("Sorry, you already liked this question! To avoid spam protection, I only allow 1 like per person per question!");
+        }
       } else {
         message.channel.send("Sorry, the ID you specified doesn't belong to any question! :(")
       }
       questionArr.sort((a, b) => {
-        if (a.likes == b.likes) return a.id - b.id;
-        else                    return b.likes - a.likes;
+        if (a.likes.length == b.likes.length) return a.id - b.id;
+        else                    return b.likes.length - a.likes.length;
       });
     } else if (msg.slice(0, 4) == "help") {
       message.channel.send(`\`qar!question <question>\` => Ask a quetion with text \`<question>\`. I will reply with the ID number of the question.

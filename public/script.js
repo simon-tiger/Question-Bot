@@ -23,7 +23,7 @@ async function getQuestions() {
       qDiv.textContent = q.question;
       qDiv.className = "q";
       const likesDiv = document.createElement("DIV");
-      likesDiv.textContent = "👍 " + q.likes;
+      likesDiv.textContent = "👍 " + q.likes.length;
       likesDiv.className = "q";
       const crossImg = document.createElement("IMG");
       crossImg.src = "cross.png";
