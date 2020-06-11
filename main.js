@@ -65,6 +65,11 @@ ${q.question}
         if (a.likes == b.likes) return a.id - b.id;
         else                    return b.likes - a.likes;
       });
+    } else if (msg.slice(0, 4) == "help") {
+      message.channel.send(`\`qar!question <question>\` => Ask a quetion with text \`<question>\`. I will reply with the ID number of the question.
+\`qar!like <id>\` => Like the question with ID \`<id>\`.
+\`qar!list\` => Get a list of all the questions, sorted by likes.
+http://questionbot-discord.herokuapp.com => Website with a "nice" list of all the questions, sorted by likes. It live-updates!`);
     }
   }
 });
