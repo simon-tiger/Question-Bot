@@ -12,6 +12,19 @@ client.once("ready", () => {
 const questionArr = [];
 let idCounter = 1;
 
+const modsOrMe = [
+  "shiffman",
+  "Alca",
+  "David",
+  "Gruselhaus",
+  "Kobe",
+  "kwichmann",
+  "meiamsome",
+  "Nola si Forritun",
+  "simontiger", // I ain't a mod, but, I am the maker of the bot!
+  "SolarLiner"
+];
+
 // TODO: Refactor
 function condition(message) {
   return message.guild.name == "Simon's Discord Bot Playground" || message.channel.id == "276366150713999363";
@@ -73,10 +86,36 @@ ${q.question}
         if (a.likes.length == b.likes.length) return a.id - b.id;
         else                    return b.likes.length - a.likes.length;
       });
+    } else if (msg.slice(0, 6) == "delete") {
+      let number = msg.slice(7);
+      if (number[0] == "#") number = +number.slice(1);
+      else                  number = +number;
+      let question = null;
+      let idx = -1;
+      for (let i = 0; i < questionArr.length; i++) {
+        if (questionArr[i].id == number) {
+          question = questionArr[i];
+          idx = i;
+          break;
+        }
+      }
+      // TODO: Refactor
+      if (question) {
+        if (question.author.id == message.author.id || modsOrMe.includes(message.author.name)) {
+          questionArr.splice(idx, 1);
+          message.channel.send("Successfully deleted question!");
+        } else {
+          message.channel.send("You do not have permission to delete this question!");
+        }
+      } else {
+        message.channel.send("Sorry, the ID you specified doesn't belong to any question! :(");
+      }
     } else if (msg.slice(0, 4) == "help") {
       message.channel.send(`\`qar!question <question>\` => Ask a quetion with text \`<question>\`. I will reply with the ID number of the question.
 \`qar!like <id>\` => Like the question with ID \`<id>\`.
 \`qar!list\` => Get a list of all the questions, sorted by likes.
+\`qar!delete <id>\` => Delete the question with id \`<id>\`. Unless you are a mod or Simon, you can only delete one of your questions.
+\`qar!help\` => Well...you see what it does.
 http://questionbot-discord.herokuapp.com => Website with a "nice" list of all the questions, sorted by likes. It live-updates!`);
     }
   }
