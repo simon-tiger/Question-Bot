@@ -37,3 +37,36 @@ body {
   position: fixed;
   bottom: 12px;
 }
+
+button {
+  background: #FFF;
+  color: #7289DA;
+  border: 1px solid #7289DA;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 6px 8px;
+  margin: 2px;
+}
+
+.heavy {
+  background: #7289DA;
+  color: #FFF;
+}
+
+button:focus {
+  outline: 0;
+}
+
+button:active {
+  background: #EEE;
+}
+
+#modorme {
+  position: absolute;
+  top: 0;
+  right: 12px;
+}
+
+#error {
+  color: #FF0000;
+}

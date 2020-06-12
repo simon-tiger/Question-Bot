@@ -10,9 +10,16 @@
     <p>
       <code>qar!question &lt;question&gt;</code><br />
       <code>qar!like &lt;id&gt;</code><br />
+      <code>qar!unlike &lt;id&gt;</code><br />
       <code>qar!list</code><br />
       <code>qar!delete &lt;id&gt;</code><br />
     </p>
+    <button id="modorme">I am a mod or Simon</button>
+    <div id="dialog">
+      <strong>To prove you are an owner of this, enter the secret in the box below:</strong><br />
+      <input id="secret" /><button class="heavy" id="submit">Submit!</button><button id="nah">Nah...</button><br />
+      <span id="error"></span>
+    </div>
     <div id="questions"></div>
     <div id="credits">Made with ❤️ by Simon Tiger</div>
     <script src="script.js"></script>

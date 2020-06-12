@@ -128,6 +128,7 @@ ${q.question}
     } else if (msg.slice(0, 4) == "help") {
       message.channel.send(`\`qar!question <question>\` => Ask a quetion with text \`<question>\`. I will reply with the ID number of the question.
 \`qar!like <id>\` => Like the question with ID \`<id>\`.
+\`qar!unlike <id>\` => Take back your like from the question with ID \`<id>\`.
 \`qar!list\` => Get a list of all the questions, sorted by likes.
 \`qar!delete <id>\` => Delete the question with id \`<id>\`. Unless you are a mod or Simon, you can only delete one of your questions.
 \`qar!help\` => Well...you see what it does.
@@ -139,13 +140,22 @@ http://questionbot-discord.herokuapp.com => Website with a "nice" list of all th
 client.login(process.env.BOT_TOKEN);
 
 app.use(express.static("public"));
+app.use(express.json());
 
 app.get("/", (request, response) => {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/questions/:removeId", (request, response) => {
-  if (request.params.removeId) {
+app.post("/check", (request, response) => {
+  console.log("Submission in!");
+  console.log(request.body);
+  response.json({
+    right: request.body.secret == process.env.SECRET
+  });
+});
+
+app.get("/questions/:removeId/:approval", (request, response) => {
+  if (request.params.approval == process.env.SECRET) {
     let idx = -1;
     for (let i = 0; i < questionArr.length; i++) {
       if (questionArr[i].id == request.params.removeId) {
