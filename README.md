@@ -14,11 +14,11 @@ See a "nice" list of all the questions here: http://questionbot-discord.herokuap
 ## TODO
 - [x] Question command
 - [x] Like command
-  - [ ] Unlike command
+  - [x] Unlike command
 - [x] List command
 - [x] Website
 - [x] Help command
 - [x] Delete command
-  - [ ] Permissions
+  - [x] Permissions
     - [x] From Discord
-    - [ ] From website
+    - [x] From website
