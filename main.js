@@ -12,6 +12,9 @@ client.once("ready", () => {
 const questionArr = [];
 let idCounter = 1;
 
+const activeOTPs = [];
+const loginTokens = [];
+
 const modsOrMe = [
   "shiffman",
   "Alca",
@@ -67,6 +70,15 @@ function nf(num, digits) {
   return str;
 }
 
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890+/";
+function oneTimePassword(length=20) {
+  let otp = "";
+  for (let i = 0; i < length; i++) {
+    otp += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return otp;
+}
+
 client.on("message", message => {
   let msg = message.content;
   if (msg.slice(0, 4) == "qar!" && condition(message)) {
@@ -116,7 +128,7 @@ ${q.question}
       }
       // TODO: Refactor
       if (question) {
-        if (question.author.id == message.author.id || modsOrMe.includes(message.author.name)) {
+        if (question.author.id == message.author.id || modsOrMe.includes(message.author.username)) {
           questionArr.splice(idx, 1);
           message.channel.send("Successfully deleted question!");
         } else {
@@ -124,6 +136,14 @@ ${q.question}
         }
       } else {
         message.channel.send("Sorry, the ID you specified doesn't belong to any question! :(");
+      }
+    } else if (msg.slice(0, 5) == "login") {
+      if (modsOrMe.includes(message.author.username)) {
+        const otp = oneTimePassword();
+        activeOTPs.push(otp);
+        message.author.send(`Copy/Paste this One-Time Password into the website: \`${otp}\``);
+      } else {
+        message.channel.send("You do not have permission to delete questions on the website!");
       }
     } else if (msg.slice(0, 4) == "help") {
       message.channel.send(`\`qar!question <question>\` => Ask a quetion with text \`<question>\`. I will reply with the ID number of the question.
@@ -149,23 +169,36 @@ app.get("/", (request, response) => {
 app.post("/check", (request, response) => {
   console.log("Submission in!");
   console.log(request.body);
-  response.json({
-    right: request.body.secret == process.env.SECRET
-  });
+  let right = false;
+  for (let i = activeOTPs.length - 1; i >= 0; i--) {
+    if (activeOTPs[i] == request.body.secret) {
+      right = true;
+      activeOTPs.splice(i, 1);
+      break;
+    }
+  }
+  let loginToken = "-";
+  if (right) {
+    loginToken = oneTimePassword(64);
+    loginTokens.push(loginToken);
+  }
+  response.json({ right, loginToken  });
 });
 
-app.get("/questions/:removeId/:approval", (request, response) => {
-  if (request.params.approval == process.env.SECRET) {
-    let idx = -1;
+app.get("/questions", (request, response) => {
+  response.json(questionArr);
+});
+
+app.post("/delete", (request, response) => {
+  if (loginTokens.includes(request.body.approval)) {
+    console.log("happening");
     for (let i = 0; i < questionArr.length; i++) {
-      if (questionArr[i].id == request.params.removeId) {
-        idx = i;
+      if (questionArr[i].id == request.body.removeId) {
+        if (i >= 0) questionArr.splice(i, 1);
         break;
       }
     }
-    if (idx >= 0) questionArr.splice(idx, 1);
   }
-  response.json(questionArr);
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {

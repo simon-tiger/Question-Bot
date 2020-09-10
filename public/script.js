@@ -13,7 +13,7 @@
   async function getQuestions() {
     let params = -1;
     setInterval(async () => {
-      const response = await fetch(`/questions/${params}/${approval}`);
+      const response = await fetch(`/questions`);
       const questionArr = await response.json();
       questions.innerHTML = "";
       if (params) params = -1;
@@ -45,6 +45,16 @@
           crossImg.onclick = () => {
             questions.removeChild(questionDiv);
             params = q.id;
+            fetch("/delete", {
+              method: "POST",
+              body: JSON.stringify({
+                removeId: q.id,
+                approval: approval
+              }),
+              headers: {
+                "Content-Type": "application/json"
+              }
+            })
           }
         }
       }
@@ -72,7 +82,7 @@
         const data = await response.json();
         if (data.right) {
           dialog.style.display = "none";
-          approval = secret.value;
+          approval = data.loginToken;
           right = true;
         } else {
           error.innerHTML = "Sorry, what you entered is <em>not</em> the secret.";
