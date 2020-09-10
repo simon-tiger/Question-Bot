@@ -10,7 +10,7 @@ body {
   margin: 8px;
   padding: 8px;
   border-radius: 8px;
-  height: 40px;
+  min-height: 40px;
   position: relative;
 }
 
