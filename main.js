@@ -80,6 +80,8 @@ function oneTimePassword(length=20) {
 }
 
 client.on("message", message => {
+  if (message.author.bot) return;
+
   let msg = message.content;
   if (msg.slice(0, 4) == "qar!" && condition(message)) {
     msg = msg.slice(4);
